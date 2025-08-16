@@ -1,0 +1,386 @@
+ <!DOCTYPE html> 
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gmail-clone</title>
+    <link rel="icon" type="image/x-icon" href="/static/logo-64.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/media.css" />
+    <script src="https://unpkg.com/ionicons@latest/dist/ionicons.js"></script>
+    <script defer src="./script.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Header styling */
+    h1 {
+        font-size: 2.5em;
+        color: #2c3e50;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    /* Messages container */
+    .messages_content {
+        width: 100%;
+        max-width: 600px;
+        height: 580px; /* Fixed height to allow scrolling */
+        overflow-y: auto; /* Enables vertical scrolling */
+        margin-bottom: 40px;
+        padding: 10px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Each message style */
+    .message {
+        background-color: #f9f9f9;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s;
+    }
+    
+    .message:hover {
+        background-color: #ecf0f1; /* Light hover effect */
+    }
+    
+    /* Styling for the full email body */
+    .email-body {
+        margin-top: 15px;
+        background-color: #f4f4f4;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #333;
+    }
+    
+    .email-body strong {
+        font-size: 1.1em;
+        color: #2c3e50;
+    }
+    
+    .email-body p {
+        white-space: pre-wrap; /* Makes sure content wraps properly if it's long */
+        word-wrap: break-word; /* Breaks long words to prevent overflow */
+    }
+    
+      /* General container styles */
+      .messages_content {
+        font-family: Arial, sans-serif;
+        max-width: 1210px;
+        margin: 0 auto;
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+    
+      /* Individual message styles */
+      .message {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        cursor: pointer;
+      }
+    
+      .message:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+    
+      /* Selected message styling */
+      .message.selected {
+        background-color: #dff0d8; /* Light green background for selected message */
+        border-color: #3c763d;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+    
+      /* Email sender styling */
+      .message strong:first-child {
+        color: #2c3e50;
+        font-size: 1.1em;
+      }
+    
+      /* Email subject styling */
+      .message .email-subject {
+        color: #34495e;
+        font-weight: bold;
+        margin: 5px 0;
+      }
+    
+      /* Email preview styling */
+      .message .email-preview {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+      /* Container for the input field and button */
+.whatsapp-share-container {
+  display: flex;
+  flex-direction: column;  /* Stack the input and button vertically */
+  align-items: center;
+  gap: 15px;  /* Space between the input and button */
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Styling for the WhatsApp input field */
+.whatsapp-input {
+  width: 250px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus effect for input field */
+.whatsapp-input:focus {
+  border-color: #25d366;
+  box-shadow: 0 0 5px rgba(37, 211, 102, 0.5);
+}
+
+/* Styling for the WhatsApp button */
+.whatsapp-button {
+  width: 250px;  /* Make button same width as input */
+  padding: 12px 20px;
+  background-color: #25d366; /* WhatsApp Green */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: not-allowed; /* Initially disabled button */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover effect for the button */
+.whatsapp-button:not(:disabled):hover {
+  background-color: #128c7e; /* Darker green for hover */
+  transform: translateY(-2px); /* Subtle lift on hover */
+}
+
+/* Disabled button style */
+.whatsapp-button:disabled {
+  background-color: #b2d8d1;
+  cursor: not-allowed;
+}
+
+    </style>
+    
+  </head>
+  <body>
+    <section>
+      <header class="header">
+        <div class="left-area flex">
+          <div class="menu hover">
+            <span class="icon"></span>
+            <span class="icon"></span>
+            <span class="icon"></span>
+          </div>
+          <img src="/static/logo-24.png" alt="logo" />
+          <span class="mail-text">Gmail</span>
+        </div>
+        <div class="middle-area">
+          <div class="search">
+            <ion-icon name="search-outline" class="hover"></ion-icon>
+            <input type="search" placeholder="Search mail" />
+          </div>
+        </div>
+        <div class="right-area flex">
+          <ion-icon name="help-circle-outline" class="hover"></ion-icon>
+          <ion-icon name="settings-outline" class="hover"></ion-icon>
+          <ion-icon name="apps" class="hover"></ion-icon>
+          <img src="/static/man.png" alt="user-photo" />
+        </div>
+      </header>
+      <nav>
+        <div class="nav_container">
+          <div class="nav_top">
+            <span> <ion-icon name="pencil"> </ion-icon> &nbsp;<a href="http://127.0.0.1:5000/send"> compose </a></span>
+          </div>
+          <div class="nav_middle">
+            <ul>
+              <li>
+                <a href="#">
+                  <ion-icon name="image-outline"></ion-icon>
+                  Inbox
+                </a>
+                <span>4</span>
+              </li>
+              <li>
+                <a href="#">
+                  <ion-icon name="star-outline"></ion-icon>
+                  Starred
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <ion-icon name="time-outline"></ion-icon>
+                  Snoozed
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <ion-icon name="send-outline"></ion-icon>
+                  Sent
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <ion-icon name="document-outline"></ion-icon>
+                  Draft
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <ion-icon name="chevron-down-outline"></ion-icon>
+                  More
+                </a>
+              </li>
+              <li>
+                <div class="col">
+                  <div class="whatsapp-share-container">
+                    <button id="shareButton" class="whatsapp-button" disabled>Share via WhatsApp</button>
+                  </div>                
+              </div>
+              </li>
+            </ul>
+          </div>
+          <div class="nav_bottom">
+            <span>Labels</span>
+            <ion-icon name="add" class="hover"></ion-icon>
+          </div>
+        </div>
+      </nav>
+      <main class="main_content">
+        <div class="top">
+          <div class="left">
+            <div class="check">
+              <img src="/static/checkbox.png" alt="" />
+              <span> <ion-icon name="checkmark"></ion-icon> </span>
+              <ion-icon name="caret-down-outline"></ion-icon>
+            </div>
+            <ion-icon
+              name="reload-outline"
+              class="hover content-icon"
+            ></ion-icon>
+            <ion-icon
+              name="ellipsis-vertical"
+              class="hover content-icon"
+            ></ion-icon>
+          </div>
+          <div class="right">
+            <div class="sort_numbers hover">1-50 of 94</div>
+            <ion-icon
+              name="chevron-back-outline"
+              class="chev content-icon"
+            ></ion-icon>
+            <ion-icon
+              name="chevron-forward-outline"
+              class="hover content-icon"
+            ></ion-icon>
+          </div>
+        </div>
+        <div class="messages_content">
+          {% for email in emails %}
+          <div class="message" data-message="{{ email.full_body | escape }}">
+            <strong class="sender">{{ email.from }}</strong><br>
+            <span class="email-subject">Subject: {{ email.subject }}</span><br>
+            <span class="email-preview">Preview: {{ email.body }}</span><br>
+            <div class="email-body">
+              <strong>Full Body:</strong><br>
+              <p>{{ email.full_body | safe }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </main>
+      <aside>
+        <div class="aside_icons">
+          <img src="/static/calendar-48.png" alt="" class="hover" />
+          <img src="/static/keep-48.png" alt="" class="hover" />
+          <img src="/static/task-48.png" alt="" class="hover" />
+          <img src="/static/account-48.png" alt="" class="hover" />
+          <span></span>
+          <ion-icon name="add" class="hover"></ion-icon>
+
+          <div>
+            <ion-icon name="chevron-forward-outline" class="hover"></ion-icon>
+          </div>
+        </div>
+      </aside>
+    </section>
+    <script>
+      const messages_content = document.querySelectorAll('.message');
+      const shareButton = document.getElementById('shareButton');
+      const whatsappNumberInput = document.getElementById('whatsappNumber');
+      let selectedMessage = null;
+      
+      // Handle message selection
+      messages_content.forEach(message => {
+          message.addEventListener('click', () => {
+              // Remove "selected" class from all messages
+              messages_content.forEach(msg => msg.classList.remove('selected'));
+      
+              // Add "selected" class to the clicked message
+              message.classList.add('selected');
+              
+              // Get the sender, subject, and body of the message
+              const sender = message.querySelector('.sender').textContent;
+              const subject = message.querySelector('.email-subject').textContent.replace('Subject: ', '');
+              const body = message.dataset.message;
+      
+              // Combine sender, subject, and body into one string
+              selectedMessage = `Sender: ${sender}\nSubject: ${subject}\n\n${body}`;
+              
+              // Enable the share button if a message is selected
+              shareButton.disabled = false;
+          });
+      });
+      
+
+// Handle WhatsApp sharing
+shareButton.addEventListener('click', () => {
+    const whatsappNumber = whatsappNumberInput.value.trim();
+    
+    // Ensure the selectedMessage is not null
+    if (!selectedMessage) {
+        alert('Please select a message to share.');
+        return;
+    }
+    
+    // Encode the selected message and prepare the WhatsApp sharing URL
+    const whatsappURL = `https://api.whatsapp.com/send?text=${encodeURIComponent(selectedMessage)}`;
+    
+    // Open the WhatsApp URL in a new tab to share the message
+    window.open(whatsappURL, '_blank');
+});
+
+  </script>
+
+  </body>
+</html>

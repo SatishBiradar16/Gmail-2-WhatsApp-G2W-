@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email and AI Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        textarea {
+            white-space: pre-wrap; /* Ensures spaces and newlines are preserved */
+            word-wrap: break-word; /* Prevents horizontal scrolling */
+        }
+        /* General body and layout styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Header styling */
+h1 {
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* Form styling */
+form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+/* Form section titles */
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #2980b9;
+}
+
+/* Input and textarea field styles */
+label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    color: #34495e;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+    border-color: #2980b9;
+    outline: none;
+    box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
+}
+
+/* Button styling */
+button {
+    background-color: #2980b9;
+    color: white;
+    padding: 12px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #3498db;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    input, textarea, button {
+        font-size: 1.2em;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <h1>Email and AI Interface</h1>
+
+    <!-- Email Form -->
+    <form id="emailForm">
+        <h2>Send Email</h2>
+        <label for="recipientEmail">Recipient Email:</label>
+        <input type="email" id="recipientEmail" placeholder="Recipient Email" required>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" placeholder="Subject" required>
+
+        <label for="message">Your Input or AI Response:</label>
+        <textarea id="message" placeholder="Enter your message or wait for the response here..." rows="5" required></textarea>
+
+        <button type="submit">Send Email</button>
+    </form>
+
+    <!-- AI Chat Form -->
+    <form id="aiForm">
+        <h2>Interact with AI</h2>
+        <label for="inputMessage">Your Message:</label>
+        <textarea id="inputMessage" placeholder="Ask AI a question" rows="5" required></textarea>
+
+        <button type="submit">Send to AI</button>
+    </form>
+
+    <script>
+        // Email Form Submission
+        document.getElementById('emailForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const recipientEmail = document.getElementById('recipientEmail').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            document.getElementById('message').value = "Sending email...";
+
+            try {
+                const response = await fetch('/send-email', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        recipient_email: recipientEmail,
+                        subject: subject,
+                        message: message,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('message').value = "Email sent successfully!";
+                } else {
+                    document.getElementById('message').value = "Failed to send email.";
+                }
+            } catch (error) {
+                document.getElementById('message').value = "An error occurred while sending the email.";
+                console.error(error);
+            }
+        });
+
+        // AI Chat Form Submission
+        document.getElementById('aiForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const inputMessage = document.getElementById('inputMessage').value;
+            document.getElementById('message').value = "Generating AI response...";
+
+            try {
+                const response = await fetch('/generate-response', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        input_message: inputMessage,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('message').value = result.response; // Display AI response in the textarea
+                } else {
+                    document.getElementById('message').value = "AI response error.";
+                }
+            } catch (error) {
+                document.getElementById('message').value = "An error occurred while generating the AI response.";
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
